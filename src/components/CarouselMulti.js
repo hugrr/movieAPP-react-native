@@ -1,24 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   StyleSheet,
-  View,
   Image,
   Dimensions,
   TouchableWithoutFeedback,
+  View,
+  TouchableWithoutFeedbackBase,
 } from 'react-native';
-import {Text, Title} from 'react-native-paper';
+import {Title, shadow} from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel';
 import {BASE_PATH_IMG} from '../utils/constanst';
-import {getGenreMovieApi} from '../api/movie';
-import {map, size} from 'lodash';
-import {color} from 'react-native-reanimated';
 
 const {width} = Dimensions.get('window');
-const ITEM_WIDTH = Math.round(width * 0.7);
+const ITEM_WIDTH = Math.round(width * 0.3);
 
-export default function CarouselVertical(props) {
+export default function CarouselMulti(props) {
   const {data, navigation} = props;
-
   return (
     <Carousel
       layout={'default'}
@@ -26,41 +23,28 @@ export default function CarouselVertical(props) {
       renderItem={item => <RenderItem data={item} navigation={navigation} />}
       sliderWidth={width}
       itemWidth={ITEM_WIDTH}
+      firstItem={1}
+      inactiveSlideScale={1}
+      inactiveSlideOpacity={1}
     />
   );
 }
 
 function RenderItem(props) {
   const {data, navigation} = props;
-  const {id, title, poster_path, genre_ids} = data.item;
-  const [genres, setGenres] = useState(null);
+  const {id, title, poster_path} = data.item;
   const imageUrl = `${BASE_PATH_IMG}/w500${poster_path}`;
-
-  useEffect(() => {
-    getGenreMovieApi(genre_ids).then(response => {
-      setGenres(response);
-    });
-  }, []);
 
   const onNavigation = () => {
     navigation.navigate('movie', {id});
   };
-
   return (
     <TouchableWithoutFeedback onPress={onNavigation}>
       <View style={styles.card}>
         <Image style={styles.image} source={{uri: imageUrl}} />
-        <Title style={styles.title}>{title}</Title>
-        <View style={styles.genres}>
-          {genres &&
-            map(genres, (genre, index) => (
-              <Text key={index} style={styles.genre}>
-                {genre}
-
-                {index !== size(genres) - 1 && ', '}
-              </Text>
-            ))}
-        </View>
+        <Title style={styles.title} numberOfLines={1}>
+          {title}
+        </Title>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -77,20 +61,13 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   image: {
-    width: '100%',
-    height: 400,
+    width: '85%',
+    height: 170,
     borderRadius: 20,
   },
   title: {
     marginHorizontal: 10,
     marginTop: 10,
-  },
-  genres: {
-    flexDirection: 'row',
-    marginHorizontal: 10,
-  },
-  genre: {
-    fontSize: 12,
-    color: '#8997a5',
+    fontSize: 16,
   },
 });
