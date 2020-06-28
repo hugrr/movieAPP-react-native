@@ -10,7 +10,7 @@ export default function Navigation() {
     <Drawer.Navigator
       initialRouteName="app"
       drawerContent={props => <DrawerContent {...props} />}>
-      <Drawer.Screen name="Perro chiclo" component={StackNavigation} />
+      <Drawer.Screen name="app" component={StackNavigation} />
     </Drawer.Navigator>
   );
 }
